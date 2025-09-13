@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baking Bliss - Spin & Win!</title>
+    <title>Baked Bliss - Spin & Win!</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,8 +11,9 @@
     <style>
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: #FEF7FB; /* Lighter Pastel Pink */
-            overflow: hidden; /* Hide overflow for animation */
+            background-color: #A40606; /* Deep Festive Red */
+            background-image: linear-gradient(315deg, #A40606 0%, #D98324 74%); /* Red to Gold Gradient */
+            overflow: hidden; 
         }
         .baking-bliss-title {
             font-family: 'Pacifico', cursive;
@@ -21,12 +22,13 @@
             width: 100%;
             height: 100%;
             transition: transform 4s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0 0 15px rgba(0,0,0, 0.3));
         }
         .wheel-container {
-            -webkit-tap-highlight-color: transparent; /* Removes blue tap highlight on mobile */
+            -webkit-tap-highlight-color: transparent;
         }
         .prize-symbol {
-            font-size: 48px; /* Large, clear symbols */
+            font-size: 48px;
         }
         .confetti {
             position: absolute;
@@ -42,14 +44,13 @@
                 opacity: 0;
             }
         }
-        /* --- New Animated Background --- */
         .background-animation {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* Place it behind everything */
+            z-index: -1;
             overflow: hidden;
         }
         .background-animation .item {
@@ -58,6 +59,7 @@
             font-size: 2rem;
             animation: float 20s linear infinite;
             opacity: 0.3;
+            color: #FFD700; /* Gold color for sparkles */
         }
         @keyframes float {
             0% {
@@ -69,100 +71,115 @@
                 opacity: 0;
             }
         }
+        /* --- New Modal Animation --- */
+        .modal-content {
+             animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-4">
 
-    <!-- New Animated Background Container -->
     <div class="background-animation" id="background-animation"></div>
 
     <header class="text-center mb-6 z-10">
-        <h1 class="text-5xl font-black text-pink-500 baking-bliss-title">Baking Bliss</h1>
-        <p class="text-xl text-gray-600">Spin to Win Sweet Treats!</p>
+        <h1 class="text-6xl font-black text-white baking-bliss-title" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.5);">Baked Bliss</h1>
+        <p class="text-xl text-white font-semibold">Spin to Win Sweet Treats!</p>
     </header>
 
     <div class="relative flex flex-col items-center z-10">
-        <!-- Arrow Pointer -->
         <div class="absolute -top-4 z-10">
-            <div class="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[30px] border-t-red-500 drop-shadow-lg"></div>
+            <div class="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[30px] border-t-yellow-300 drop-shadow-lg"></div>
         </div>
 
-        <!-- The Interactive Wheel -->
-        <div id="spinTrigger" class="wheel-container relative w-80 h-80 md:w-96 md:h-96 my-8 flex items-center justify-center cursor-pointer">
-            <!-- SVG Wheel is rendered here by JavaScript -->
+        <div class="wheel-container relative w-80 h-80 md:w-96 md:h-96 my-8 flex items-center justify-center">
             <div id="wheel" class="w-full h-full"></div>
-             <div class="absolute w-16 h-16 bg-white rounded-full border-4 border-gray-100 shadow-inner flex items-center justify-center">
-                 <div class="w-8 h-8 bg-gray-200 rounded-full shadow-inner"></div>
+            <div id="spinTrigger" class="absolute w-24 h-24 bg-red-600 rounded-full border-4 border-yellow-300 shadow-lg flex items-center justify-center cursor-pointer transform active:scale-95 transition-transform">
+                <span class="text-white text-3xl font-black" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.4);">SPIN</span>
             </div>
         </div>
     </div>
     
-    <!-- Result Modal -->
     <div id="resultModal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
          <div id="confetti-container" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
         <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 text-center max-w-sm w-full transform transition-all scale-95 opacity-0">
-            <h2 class="text-2xl font-black text-pink-500 mb-2">YOU WON!</h2>
-            <p id="prizeName" class="text-4xl font-bold text-gray-800 my-4 leading-tight"></p>
-            <p class="text-gray-600 mb-4">Show this screen to our staff to redeem!</p>
-            <div class="bg-gray-100 rounded-lg p-3 my-4">
-                <span class="text-sm text-gray-500">UNIQUE CODE</span>
-                <p id="prizeId" class="text-2xl font-mono tracking-widest"></p>
+             <div class="modal-content">
+                <h2 class="text-2xl font-black text-red-600 mb-2">YOU WON!</h2>
+                <p id="prizeName" class="text-4xl font-bold text-gray-800 my-4 leading-tight"></p>
+                <p class="text-gray-600 mb-4">Show this screen to our staff to redeem!</p>
+                <div class="bg-gray-100 rounded-lg p-3 my-4">
+                    <span class="text-sm text-gray-500">UNIQUE CODE</span>
+                    <p id="prizeId" class="text-2xl font-mono tracking-widest"></p>
+                </div>
+                
+                <div id="geminiFeatures" class="mt-6 space-y-4">
+                    <div id="geminiButtons" class="grid grid-cols-1 gap-3">
+                        <button id="fortuneButton" class="w-full bg-amber-500 text-white font-bold py-3 px-4 rounded-lg text-lg transform hover:scale-105 transition-transform">
+                            ✨ Get Your Sweet Fortune!
+                        </button>
+                        <button id="funFactButton" class="w-full bg-sky-500 text-white font-bold py-3 px-4 rounded-lg text-lg transform hover:scale-105 transition-transform">
+                            🧁 Get a Baker's Fun Fact!
+                        </button>
+                        <button id="nicknameButton" class="w-full bg-purple-500 text-white font-bold py-3 px-4 rounded-lg text-lg transform hover:scale-105 transition-transform">
+                            🎉 Name Your Treat!
+                        </button>
+                    </div>
+
+                    <div id="fortuneContainer">
+                        <div id="fortuneLoading" class="hidden my-4 text-gray-500">
+                            Baking your fortune... 🥠
+                        </div>
+                        <div id="fortuneResult" class="hidden mt-4 p-4 bg-amber-100 border-l-4 border-amber-500 text-amber-800 rounded-r-lg">
+                            <p id="fortuneText" class="text-lg italic"></p>
+                        </div>
+                    </div>
+
+                    <div id="funFactContainer">
+                         <div id="funFactLoading" class="hidden my-4 text-gray-500">
+                            Looking up a fun fact... 📜
+                        </div>
+                        <div id="funFactResult" class="hidden mt-4 p-4 bg-sky-100 border-l-4 border-sky-500 text-sky-800 rounded-r-lg">
+                            <p id="funFactText" class="text-lg"></p>
+                        </div>
+                    </div>
+
+                    <div id="nicknameContainer">
+                         <div id="nicknameLoading" class="hidden my-4 text-gray-500">
+                            Inventing a legendary name... ✨
+                        </div>
+                        <div id="nicknameResult" class="hidden mt-4 p-4 bg-purple-100 border-l-4 border-purple-500 text-purple-800 rounded-r-lg">
+                            <p class="text-gray-600 text-sm">Your treat shall henceforth be known as:</p>
+                            <p id="nicknameText" class="text-2xl font-bold"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="closeModalButton" class="mt-8 w-full bg-gray-700 text-white font-bold py-3 px-4 rounded-lg text-lg transform hover:scale-105 transition-transform">
+                    Awesome!
+                </button>
             </div>
-            
-            <!-- Gemini API Features -->
-            <div id="geminiFeatures" class="mt-6 space-y-4">
-                <div id="geminiButtons" class="grid grid-cols-1 gap-3">
-                    <button id="fortuneButton" class="w-full bg-amber-500 text-white font-bold py-3 px-4 rounded-lg text-lg transform hover:scale-105 transition-transform">
-                        ✨ Get Your Sweet Fortune!
-                    </button>
-                    <button id="funFactButton" class="w-full bg-sky-500 text-white font-bold py-3 px-4 rounded-lg text-lg transform hover:scale-105 transition-transform">
-                        🧁 Get a Baker's Fun Fact!
-                    </button>
-                    <button id="nicknameButton" class="w-full bg-purple-500 text-white font-bold py-3 px-4 rounded-lg text-lg transform hover:scale-105 transition-transform">
-                        🎉 Name Your Treat!
-                    </button>
-                </div>
-
-                <!-- Fortune Display Area -->
-                <div id="fortuneContainer">
-                    <div id="fortuneLoading" class="hidden my-4 text-gray-500">
-                        Baking your fortune... 🥠
-                    </div>
-                    <div id="fortuneResult" class="hidden mt-4 p-4 bg-amber-100 border-l-4 border-amber-500 text-amber-800 rounded-r-lg">
-                        <p id="fortuneText" class="text-lg italic"></p>
-                    </div>
-                </div>
-
-                <!-- Fun Fact Display Area -->
-                <div id="funFactContainer">
-                     <div id="funFactLoading" class="hidden my-4 text-gray-500">
-                        Looking up a fun fact... 📜
-                    </div>
-                    <div id="funFactResult" class="hidden mt-4 p-4 bg-sky-100 border-l-4 border-sky-500 text-sky-800 rounded-r-lg">
-                        <p id="funFactText" class="text-lg"></p>
-                    </div>
-                </div>
-
-                <!-- Nickname Display Area -->
-                <div id="nicknameContainer">
-                     <div id="nicknameLoading" class="hidden my-4 text-gray-500">
-                        Inventing a legendary name... ✨
-                    </div>
-                    <div id="nicknameResult" class="hidden mt-4 p-4 bg-purple-100 border-l-4 border-purple-500 text-purple-800 rounded-r-lg">
-                        <p class="text-gray-600 text-sm">Your treat shall henceforth be known as:</p>
-                        <p id="nicknameText" class="text-2xl font-bold"></p>
-                    </div>
-                </div>
-            </div>
-            
-            <button id="closeModalButton" class="mt-8 w-full bg-gray-700 text-white font-bold py-3 px-4 rounded-lg text-lg transform hover:scale-105 transition-transform">
-                Awesome!
-            </button>
         </div>
     </div>
 
+    <!-- "Already Spun" Modal -->
+    <div id="alreadySpunModal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 text-center max-w-sm w-full transform transition-all scale-95 opacity-0">
+            <div class="modal-content">
+                <div class="text-6xl mb-4">🤔</div>
+                <h2 class="text-2xl font-black text-gray-800 mb-2">Whoops!</h2>
+                <p class="text-gray-600 mb-6">You've already had your spin for today. Come back tomorrow for another chance to win!</p>
+                <button id="closeAlreadySpunModalButton" class="w-full bg-red-500 text-white font-bold py-3 px-4 rounded-lg text-lg transform hover:scale-105 transition-transform">
+                    Got It!
+                </button>
+            </div>
+        </div>
+    </div>
+
+
     <script type="module">
-        // IMPORTANT: Add your Firebase config in setup-instructions.txt
         const firebaseConfig = {
             apiKey: "AIzaSyDauZ3AwxVRK_mvRT89qsXW4g84cgq8Rjc",
             authDomain: "bakingblisswheel.firebaseapp.com",
@@ -182,8 +199,9 @@
         const prizeIdEl = document.getElementById('prizeId');
         const closeModalButton = document.getElementById('closeModalButton');
         const confettiContainer = document.getElementById('confetti-container');
+        const alreadySpunModal = document.getElementById('alreadySpunModal');
+        const closeAlreadySpunModalButton = document.getElementById('closeAlreadySpunModalButton');
         
-        // Gemini Feature Elements
         const geminiButtons = document.getElementById('geminiButtons');
         const fortuneButton = document.getElementById('fortuneButton');
         const fortuneLoading = document.getElementById('fortuneLoading');
@@ -199,17 +217,7 @@
         const nicknameText = document.getElementById('nicknameText');
         let currentPrize = '';
 
-        const prizes = [
-            "THE GANG BONUS!", 
-            "₹25 OFF any Slice Cake",
-            "THE INFLUENCER DEAL",
-            "BUY 1 CUPCAKE, GET 1 HALF OFF",
-            "₹50 OFF on ₹275+",
-            "ADD A CUPCAKE FOR ₹25!",
-            "DOUBLE YOUR LUCK",
-            "₹20 OFF ANY BROWNIE"
-        ];
-
+        const prizes = [ "THE GANG BONUS!", "₹25 OFF any Slice Cake", "THE INFLUENCER DEAL", "BUY 1 CUPCAKE, GET 1 HALF OFF", "₹50 OFF on ₹275+", "ADD A CUPCAKE FOR ₹25!", "DOUBLE YOUR LUCK", "₹20 OFF ANY BROWNIE" ];
         const prizeSymbols = ["🙌", "🍰", "🤳", "🧁+🧁", "💰", "+🧁", "🍀", "🍫"];
         
         const dailyStrategies = {
@@ -224,12 +232,11 @@
         let db;
         let wheelSVG;
 
-        // --- INITIALIZATION ---
         function drawWheel() {
             const numSegments = prizes.length;
             const size = 384; 
             const radius = size / 2;
-            const colors = ["#FFD1E3", "#FFF6C2", "#D4F1FF", "#EAD9FF", "#FFD1E3", "#FFF6C2", "#D4F1FF", "#EAD9FF"];
+            const colors = ["#FFFDD0", "#FFFFFF", "#FFFDD0", "#FFFFFF", "#FFFDD0", "#FFFFFF", "#FFFDD0", "#FFFFFF"];
             
             let svgContent = `<svg class="wheel-svg" viewBox="0 0 ${size} ${size}">`;
 
@@ -237,17 +244,14 @@
                 const startAngle = i * (360 / numSegments);
                 const endAngle = (i + 1) * (360 / numSegments);
                 const largeArcFlag = (endAngle - startAngle) <= 180 ? "0" : "1";
-                
                 const start = polarToCartesian(radius, radius, endAngle);
                 const end = polarToCartesian(radius, radius, startAngle);
 
-                // Segment path
                 const pathData = `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y} L ${radius} ${radius} Z`;
-                svgContent += `<path d="${pathData}" fill="${colors[i]}" stroke="white" stroke-width="2" />`;
+                svgContent += `<path d="${pathData}" fill="${colors[i]}" stroke="#E5E7EB" stroke-width="2" />`;
 
-                // Symbol placement
                 const symbolAngle = startAngle + (360 / numSegments) / 2;
-                const symbolPosition = polarToCartesian(radius, radius * 0.65, symbolAngle); // Place symbol 65% out from center
+                const symbolPosition = polarToCartesian(radius, radius * 0.65, symbolAngle);
                 svgContent += `<text x="${symbolPosition.x}" y="${symbolPosition.y}" dy=".3em" text-anchor="middle" class="prize-symbol">${prizeSymbols[i]}</text>`;
             }
 
@@ -265,9 +269,7 @@
         }
         
         function initializeFirebase() {
-             if (firebaseConfig.apiKey === "AIzaSyDauZ3AwxVRK_mvRT89qsXW4g84cgq8Rjc") {
-                // Config has been updated, okay to initialize
-             } else if (firebaseConfig.apiKey === "YOUR_API_KEY" || !firebaseConfig.projectId) {
+             if (firebaseConfig.apiKey === "YOUR_API_KEY" || !firebaseConfig.projectId) {
                 console.warn("Firebase config is not set. Using offline mode.");
                 return null;
             }
@@ -280,10 +282,9 @@
             }
         }
         
-        // --- New Background Animation Logic ---
         function createBackgroundItems() {
             const container = document.getElementById('background-animation');
-            const items = ['🧁', '🍰', '🍫', '✨', '💖'];
+            const items = ['✨', '⭐', '💖', '🍰'];
             const itemCount = 20;
 
             for (let i = 0; i < itemCount; i++) {
@@ -299,42 +300,31 @@
         }
 
         drawWheel();
-        createBackgroundItems(); // Create the animated items
+        createBackgroundItems();
         db = initializeFirebase();
 
-        // --- SPIN LOGIC ---
         async function getRiggedPrize(strategy) {
             const availablePrizes = dailyStrategies[strategy].filter(s => prizes.includes(s.prize));
             const totalWeight = availablePrizes.reduce((sum, p) => sum + p.weight, 0);
             let random = Math.random() * totalWeight;
-
             for (const prize of availablePrizes) {
-                if (random < prize.weight) {
-                    return prizes.indexOf(prize.prize);
-                }
+                if (random < prize.weight) return prizes.indexOf(prize.prize);
                 random -= prize.weight;
             }
-            return 0; // Fallback
+            return 0;
         }
         
         async function getNextCode() {
             if (!db) return "OFFLINE-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-            
             const counterRef = doc(db, "codes", "counter");
             let nextCode = "BLISS-00001";
-
             try {
                 await runTransaction(db, async (transaction) => {
                     const counterDoc = await transaction.get(counterRef);
-                    let newCount = 1;
-                    if (counterDoc.exists()) {
-                        newCount = counterDoc.data().count + 1;
-                    }
-                    
+                    let newCount = counterDoc.exists() ? counterDoc.data().count + 1 : 1;
                     const codeNum = newCount.toString().padStart(5, '0');
                     const codeId = `code_${codeNum}`;
                     const codeRef = doc(db, "codes", codeId);
-
                     const codeDoc = await transaction.get(codeRef);
                     if (!codeDoc.exists()) {
                          const generatedCode = "BLISS-" + Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -343,7 +333,6 @@
                     } else {
                         nextCode = codeDoc.data().uniqueCode;
                     }
-                    
                     transaction.set(counterRef, { count: newCount });
                 });
                 return nextCode;
@@ -353,17 +342,32 @@
             }
         }
 
-
         spinTrigger.addEventListener('click', async () => {
             if (isSpinning) return;
             
-            // if (localStorage.getItem('bakingBlissSpun') === 'true') {
-            //     alert("You've already had your spin for the day. Come back tomorrow!");
-            //     return;
-            // }
+            let limitSpins = true;
+            if (db) {
+                const limitRef = doc(db, "config", "spinLimit");
+                try {
+                    const docSnap = await getDoc(limitRef);
+                    if (docSnap.exists() && docSnap.data().enabled === false) {
+                        limitSpins = false;
+                    }
+                } catch (e) { console.error("Could not check spin limit", e)}
+            }
+            
+            if (limitSpins) {
+                const today = new Date().toISOString().split('T')[0];
+                if (localStorage.getItem('bakedBlissLastSpin') === today) {
+                    alreadySpunModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        alreadySpunModal.querySelector('div.transform').classList.remove('scale-95', 'opacity-0');
+                    }, 10);
+                    return;
+                }
+            }
 
             isSpinning = true;
-            
             let winningPrizeIndex = 0;
             if (db) {
                 const strategyRef = doc(db, "config", "strategy");
@@ -373,28 +377,26 @@
             } else {
                  winningPrizeIndex = Math.floor(Math.random() * prizes.length);
             }
-            
             const degreesPerSegment = 360 / prizes.length;
             const totalSpins = 360 * 5; 
-            
             const targetRotation = 360 - (winningPrizeIndex * degreesPerSegment);
             const randomJitter = (Math.random() - 0.5) * (degreesPerSegment * 0.8); 
             const finalRotation = totalSpins + targetRotation - randomJitter;
-            
             currentRotation = finalRotation;
-            
             wheelSVG.style.transition = 'transform 4s cubic-bezier(0.25, 1, 0.5, 1)';
             wheelSVG.style.transform = `rotate(${currentRotation}deg)`;
-
-            setTimeout(() => {
-                showResult(winningPrizeIndex);
-            }, 4100);
+            setTimeout(() => showResult(winningPrizeIndex), 4100);
         });
         
         async function showResult(prizeIndex) {
             currentPrize = prizes[prizeIndex]; 
             prizeNameEl.textContent = currentPrize;
             
+            prizeIdEl.textContent = "Generating...";
+            resultModal.querySelector('div.transform').classList.remove('scale-95', 'opacity-0');
+            resultModal.classList.remove('hidden');
+            triggerConfetti();
+
             const uniqueCode = await getNextCode();
             prizeIdEl.textContent = uniqueCode;
 
@@ -410,78 +412,44 @@
                     console.error("Error writing spin to Firestore: ", error);
                 }
             }
-
-            localStorage.setItem('bakingBlissSpun', 'true');
+            
+            const today = new Date().toISOString().split('T')[0];
+            localStorage.setItem('bakedBlissLastSpin', today);
             
             geminiButtons.classList.remove('hidden');
-            fortuneLoading.classList.add('hidden');
-            fortuneResult.classList.add('hidden');
-            funFactLoading.classList.add('hidden');
-            funFactResult.classList.add('hidden');
-            nicknameLoading.classList.add('hidden');
-            nicknameResult.classList.add('hidden');
-
-
-            resultModal.classList.remove('hidden');
-            setTimeout(() => {
-                resultModal.querySelector('div.transform').classList.remove('scale-95', 'opacity-0');
-                triggerConfetti();
-            }, 10);
+            [fortuneLoading, fortuneResult, funFactLoading, funFactResult, nicknameLoading, nicknameResult].forEach(el => el.classList.add('hidden'));
         }
 
         closeModalButton.addEventListener('click', () => {
             resultModal.querySelector('div.transform').classList.add('scale-95', 'opacity-0');
-            
-            const remainder = currentRotation % 360;
-            wheelSVG.style.transition = 'transform 1s ease-out';
-            wheelSVG.style.transform = `rotate(${currentRotation - remainder}deg)`;
-
             setTimeout(() => {
                 resultModal.classList.add('hidden');
                 isSpinning = false;
             }, 300);
         });
 
-        // --- Gemini API Feature: Get Sweet Fortune ---
+        closeAlreadySpunModalButton.addEventListener('click', () => {
+            alreadySpunModal.querySelector('div.transform').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                alreadySpunModal.classList.add('hidden');
+            }, 300);
+        });
+
         fortuneButton.addEventListener('click', async () => {
             geminiButtons.classList.add('hidden');
             fortuneLoading.classList.remove('hidden');
-            funFactResult.classList.add('hidden');
-            nicknameResult.classList.add('hidden');
-
+            [funFactResult, nicknameResult].forEach(el => el.classList.add('hidden'));
             const apiKey = "";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-            const systemPrompt = "You are the joyful baker behind 'Baking Bliss'. Your fortunes are always short (1-2 sentences), sweet, funny, and themed around desserts, cakes, pastries, and happiness. Never mention being an AI.";
+            const systemPrompt = "You are the joyful baker behind 'Baked Bliss'. Your fortunes are always short (1-2 sentences), sweet, funny, and themed around desserts, cakes, pastries, and happiness. Never mention being an AI.";
             const userQuery = `I just won '${currentPrize}'. Give me a sweet, happy fortune related to that!`;
-
-            const payload = {
-                contents: [{ parts: [{ text: userQuery }] }],
-                systemInstruction: {
-                    parts: [{ text: systemPrompt }]
-                },
-            };
-
+            const payload = { contents: [{ parts: [{ text: userQuery }] }], systemInstruction: { parts: [{ text: systemPrompt }] } };
             try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
-                }
-
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) { throw new Error(`API error: ${response.status}`); }
                 const result = await response.json();
                 const fortune = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (fortune) {
-                    fortuneText.textContent = fortune.trim();
-                } else {
-                    fortuneText.textContent = "Your future is sweet, but the oven is busy! Try again later.";
-                }
-
+                fortuneText.textContent = fortune ? fortune.trim() : "Your future is sweet, but the oven is busy! Try again later.";
             } catch (error) {
                 console.error("Error fetching fortune:", error);
                 fortuneText.textContent = "The recipe for your fortune got misplaced! Just know it's a sweet one.";
@@ -491,46 +459,21 @@
             }
         });
 
-        // --- Gemini API Feature: Get Baker's Fun Fact ---
         funFactButton.addEventListener('click', async () => {
             geminiButtons.classList.add('hidden');
             funFactLoading.classList.remove('hidden');
-            fortuneResult.classList.add('hidden');
-            nicknameResult.classList.add('hidden');
-
+            [fortuneResult, nicknameResult].forEach(el => el.classList.add('hidden'));
             const apiKey = "";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-            const systemPrompt = "You are a cheerful baker at 'Baking Bliss'. You know everything about desserts. Provide a single, fascinating fun fact or a creative serving suggestion for the item mentioned. Keep it short, exciting, and fun. Never mention being an AI.";
+            const systemPrompt = "You are a cheerful baker at 'Baked Bliss'. You know everything about desserts. Provide a single, fascinating fun fact or a creative serving suggestion for the item mentioned. Keep it short, exciting, and fun. Never mention being an AI.";
             const userQuery = `Based on the prize I won, which is '${currentPrize}', give me a fun fact or serving suggestion. If the prize is generic like 'Double Your Luck', give me a general fun fact about celebration cakes.`;
-
-            const payload = {
-                contents: [{ parts: [{ text: userQuery }] }],
-                systemInstruction: {
-                    parts: [{ text: systemPrompt }]
-                },
-            };
-
+            const payload = { contents: [{ parts: [{ text: userQuery }] }], systemInstruction: { parts: [{ text: systemPrompt }] } };
             try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
-                }
-
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) { throw new Error(`API error: ${response.status}`); }
                 const result = await response.json();
                 const funFact = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (funFact) {
-                    funFactText.textContent = funFact.trim();
-                } else {
-                    funFactText.textContent = "I'm drawing a blank! Must be the sugar rush. But I know for a fact you'll love our treats!";
-                }
-
+                funFactText.textContent = funFact ? funFact.trim() : "I'm drawing a blank! Must be the sugar rush. But I know for a fact you'll love our treats!";
             } catch (error) {
                 console.error("Error fetching fun fact:", error);
                 funFactText.textContent = "Our book of facts is currently being proof-read! Please try again in a moment.";
@@ -540,46 +483,21 @@
             }
         });
 
-        // --- Gemini API Feature: Name Your Treat ---
         nicknameButton.addEventListener('click', async () => {
             geminiButtons.classList.add('hidden');
             nicknameLoading.classList.remove('hidden');
-            fortuneResult.classList.add('hidden');
-            funFactResult.classList.add('hidden');
-
+            [fortuneResult, funFactResult].forEach(el => el.classList.add('hidden'));
             const apiKey = "";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
             const systemPrompt = "You are a creative and funny naming expert for desserts. Your job is to give a single, epic, and quirky nickname to a treat. Respond with ONLY the nickname in quotation marks, and nothing else.";
             const userQuery = `Give a nickname to the prize I won: '${currentPrize}'. If the prize is generic like 'Double Your Luck', give a nickname to 'a lucky moment'.`;
-
-            const payload = {
-                contents: [{ parts: [{ text: userQuery }] }],
-                systemInstruction: {
-                    parts: [{ text: systemPrompt }]
-                },
-            };
-
+            const payload = { contents: [{ parts: [{ text: userQuery }] }], systemInstruction: { parts: [{ text: systemPrompt }] } };
             try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
-                }
-
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) { throw new Error(`API error: ${response.status}`); }
                 const result = await response.json();
                 let nickname = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (nickname) {
-                    nicknameText.textContent = nickname.trim().replace(/"/g, '');
-                } else {
-                    nicknameText.textContent = "The Unnameable Treat";
-                }
-
+                nicknameText.textContent = nickname ? nickname.trim().replace(/"/g, '') : "The Unnameable Treat";
             } catch (error) {
                 console.error("Error fetching nickname:", error);
                 nicknameText.textContent = "The Delicious Mystery";
